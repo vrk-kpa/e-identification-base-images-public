@@ -9,26 +9,17 @@ FROM ubuntu:16.04
 RUN \
   apt-get update && \
   apt-get -y upgrade && \
-  apt-get -y install python-software-properties software-properties-common sudo
-
-# Install Java
-COPY jdk-8u151-linux-x64.tar.gz /tmp/
-RUN mkdir -p /usr/lib/jvm/ && \
-    tar zxvf /tmp/jdk-8u151-linux-x64.tar.gz -C /usr/lib/jvm/ && \
-    mv /usr/lib/jvm/jdk1.8.0_151 /usr/lib/jvm/java-8-oracle && \
-    rm -f /tmp/jdk-8u151-linux-x64.tar.gz
-
-# enable unlimited JCE policy (java8u151 contains needed jars, but JCE is limited)
-RUN sed --in-place "s/#crypto.policy=unlimited/crypto.policy=unlimited/g" /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security
-
-RUN \
+  apt-get -y install python-software-properties software-properties-common sudo && \
+  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9 && \
+  apt-add-repository 'deb http://repos.azulsystems.com/ubuntu stable main' && \
+  apt-get update && \
+  apt-get -y install zulu-8 && \
   rm -rf /var/lib/apt/lists/* && \
   apt-get clean
 
+# enable unlimited JCE policy
+RUN sed --in-place "s/#crypto.policy=unlimited/crypto.policy=unlimited/g" /usr/lib/jvm/zulu-8-amd64/jre/lib/security/java.security
+
 # Define JAVA_HOME
-RUN update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/java-8-oracle/bin/java" 1 && \
-	update-alternatives --install "/usr/bin/javaws" "javaws" "/usr/lib/jvm/java-8-oracle/bin/javaws" 1 && \
-	update-alternatives --set java "/usr/lib/jvm/java-8-oracle/bin/java" && \
-	update-alternatives --set javaws "/usr/lib/jvm/java-8-oracle/bin/javaws"
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
-ENV PATH="/usr/lib/jvm/java-8-oracle/bin:${PATH}"
+ENV JAVA_HOME /usr/lib/jvm/zulu-8-amd64
+ENV PATH="/usr/lib/jvm/zulu-8-amd64/bin:${PATH}"

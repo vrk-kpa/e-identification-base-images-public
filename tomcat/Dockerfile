@@ -12,18 +12,17 @@ RUN rm -rf /usr/share/tomcat && \
     chmod 755 /etc/init.d/tomcat && \
     chown tomcat:tomcat /etc/init.d/tomcat && \
     chown -R tomcat:tomcat /usr/share/tomcat
-    
+
 RUN set -x \
     && apt-get update \
     && apt-get -y upgrade \
-	&& apt-get install -yq gcc make openssl libssl-dev libapr1 libapr1-dev \
+	&& apt-get install -yq gcc make openssl libssl-dev libapr1 libapr1-dev less \
 	&& tar zxf /usr/share/tomcat/bin/tomcat-native.tar.gz -C /tmp \
 	&& cd /tmp/tomcat-native*-src/native/ \
-	&& ./configure --with-apr=/usr/bin/apr-1-config --with-java-home=/usr/lib/jvm/java-8-oracle --with-ssl=yes --libdir=/usr/lib/ \
+	&& ./configure --with-apr=/usr/bin/apr-1-config --with-java-home=/usr/lib/jvm/zulu-8-amd64 --with-ssl=yes --libdir=/usr/lib/ \
 	&& make \
 	&& make install \
 	&& apt-get purge -y gcc make libssl-dev libapr1-dev \
 	&& apt-get -y autoremove \
 	&& rm -rf /tmp/tomcat-native* \
 	&& rm -rf /var/lib/apt/lists/*
-	

@@ -15,7 +15,7 @@
 #
 
 #Location of JAVA_HOME (bin files)
-export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+export JAVA_HOME=/usr/lib/jvm/zulu-8-amd64
 
 #Add Java binary files to PATH
 export PATH=$JAVA_HOME/bin:$PATH
